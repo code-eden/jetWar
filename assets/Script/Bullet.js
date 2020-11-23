@@ -9,7 +9,7 @@ cc.Class({
     // LIFE-CYCLE CALLBACKS:
 
     onLoad() {
-        cc.log("bullet on load");
+        //cc.log("bullet on load");
     },
 
     start() {
@@ -20,16 +20,16 @@ cc.Class({
 
     // 启动子弹发射
     init(pool) {
-        cc.log("bullet init");
+        //cc.log("bullet init");
         this.pool = pool;
     },
 
     fire() {
-        cc.log("bullet now fire");
+        //cc.log("bullet now fire");
         let screenH = this.node.parent.height / 2 + 20;
-        cc.log("screen height " + screenH);
-        cc.log("hero position x " + this.hero.x + " y " + this.hero.y);
-        cc.log("bullet position x " + this.node.x + " y " + this.node.y);
+        //cc.log("screen height " + screenH);
+        //cc.log("hero position x " + this.hero.x + " y " + this.hero.y);
+        //cc.log("bullet position x " + this.node.x + " y " + this.node.y);
 
         let bulletY = this.hero.y + 40;
         this.node.y = bulletY;
@@ -44,7 +44,7 @@ cc.Class({
     },
 
     over() {
-        cc.log("bullet over");
+        //cc.log("bullet over");
         this.pool.nodeOver(this.node);
     },
 });

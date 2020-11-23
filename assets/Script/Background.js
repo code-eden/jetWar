@@ -34,11 +34,11 @@ cc.Class({
         this.bg2IsOnTop = true;
         this.initAllPool();
         
-        cc.log("bg node height " + this.bgHeight);
+        //cc.log("bg node height " + this.bgHeight);
     },
 
     initAllPool(){
-        cc.log("init bullet and enemy pool");
+        //cc.log("init bullet and enemy pool");
         this.bulletPool = new PoolClass();
         this.enemyPool = new PoolClass();
 

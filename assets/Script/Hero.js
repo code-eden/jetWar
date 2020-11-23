@@ -9,27 +9,17 @@ cc.Class({
         bulletSpeed: 0.5,
     },
 
-    runJumpAction: function () {
-        console.log("run jump");
-        this.node.x = 0;
-        // 跳跃上升
-        var jumpUp = cc.tween().by(this.jumpDuration, { y: this.jumpHeight }, { easing: 'sineOut' });
-        // 下落
-        var jumpDown = cc.tween().by(this.jumpDuration, { y: -this.jumpHeight }, { easing: 'sineIn' });
-
-        // 创建一个缓动，按 jumpUp、jumpDown 的顺序执行动作
-        var tween = cc.tween().sequence(jumpUp, jumpDown)
-        // 不断重复
-        return cc.tween().repeatForever(tween);
-    },
-    // use this for initialization
     onLoad: function () {
-        console.log("load  jump");
-        //cc.log("player position x " + this.node.x + " y " + this.node.y);
-        var jumpAction = this.runJumpAction();
-        console.log("node name" + this.node);
-        //cc.tween(this.node).then(jumpAction).start();
+        this.node.on(cc.Node.EventType.TOUCH_MOVE, this.heroMove, this);
+        this.node.on(cc.Node.EventType.MOUSE_DOWN, this.heroMove, this);
+
         this.autoFire();
+    },
+
+    heroMove(touchEvent) {
+        //let location = touchEvent.getLocation();
+        cc.log("touch x " + touchEvent.getLocationX() + " y " + touchEvent.getLocationY());
+        cc.log("hero x " + this.node.x + " y " + this.node.y);
     },
 
     // 定时自动发射子弹
