@@ -16,8 +16,11 @@ cc.Class({
         this.autoFire();
     },
 
-    heroMove(touchEvent) {
+    heroMove(touchEvent) { // Event 类型，子类有 EventTouch 、EventMouse等 
         //let location = touchEvent.getLocation();
+        this.node.x += touchEvent.getDeltaX(); // 触点距离上一次事件移动的 x 轴距离
+        this.node.y += touchEvent.getDeltaY(); // 触点距离上一次事件移动的 y 轴距离
+
         cc.log("touch x " + touchEvent.getLocationX() + " y " + touchEvent.getLocationY());
         cc.log("hero x " + this.node.x + " y " + this.node.y);
     },
