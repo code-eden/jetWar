@@ -635,10 +635,8 @@
       "__id__": 16
     },
     "_enabled": true,
-    "text": "Hello, World!",
-    "jumpHeight": 150,
-    "jumpDuration": 0.5,
-    "bulletSpeed": 0.3,
+    "bulletSpeed": 500,
+    "bulletFreq": 5,
     "_id": "c7iSbe1nRIbI4xJD6AQj6H"
   },
   {
