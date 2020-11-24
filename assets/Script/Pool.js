@@ -52,7 +52,8 @@ cc.Class({
         }
         prefabNode.parent = parentNode;
         let prefab = prefabNode.getComponent(this.poolType);
-        prefab.init(this); //调用脚本初始化，pool 对应的脚本需要有 init 方法
+        prefab.pool = this;
+        prefab.init(); //调用脚本初始化，pool 对应的脚本需要有 init 方法
 
         return prefab;
     },
