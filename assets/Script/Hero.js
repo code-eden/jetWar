@@ -15,11 +15,56 @@ cc.Class({
         this.edgeW = this.screenW / 2 - this.node.width * this.node.scaleX;
         this.edgeH = this.screenH / 2 - this.node.height * this.node.scaleY;
         //cc.log("hero x " + this.edgeW+ " y " + this.edgeH);
-        this.node.on(cc.Node.EventType.TOUCH_MOVE, this.heroMove, this);
-        this.node.on(cc.Node.EventType.MOUSE_DOWN, this.heroMove, this);
+        this.initEventListener();
 
         this.bulletInterval = 1 / this.bulletFreq;
         this.autoFire();
+    },
+
+    initEventListener() {
+        // 监听触摸事件
+        this.node.on(cc.Node.EventType.TOUCH_MOVE, this.heroMove, this);
+        //this.node.on(cc.Node.EventType.MOUSE_DOWN, this.heroMove, this);
+        this.initKeyboardEvent();
+    },
+
+    initKeyboardEvent() {
+        this.node.on(cc.SystemEvent.KEY_DOWN, this.onKeyDown, this);
+        this.node.on(cc.SystemEvent.KEY_UP, this.onKeyUp, this);
+    },
+
+    onKeyDown(event) {
+        switch (event.keyCode) {
+            case cc.macro.KEY.a:
+                console.log('Press a key');
+                break;
+            case cc.macro.KEY.s:
+                console.log('Press a key');
+                break;
+            case cc.macro.KEY.w:
+                console.log('Press a key');
+                break;
+            case cc.macro.KEY.d:
+                console.log('Press a key');
+                break;
+        }
+    },
+
+    onKeyUp(event) {
+        switch (event.keyCode) {
+            case cc.macro.KEY.a:
+                console.log('Press a key');
+                break;
+            case cc.macro.KEY.s:
+                console.log('Press a key');
+                break;
+            case cc.macro.KEY.w:
+                console.log('Press a key');
+                break;
+            case cc.macro.KEY.d:
+                console.log('Press a key');
+                break;
+        }
     },
 
     heroMove(touchEvent) { // Event 类型，子类有 EventTouch 、EventMouse等 
@@ -52,6 +97,23 @@ cc.Class({
         bullet.hero = this.node;
         bullet.fire();
     },
+
+    /**
+     * 当碰撞产生的时候调用
+     * @param  {Collider} other 产生碰撞的另一个碰撞组件
+     * @param  {Collider} self  产生碰撞的自身的碰撞组件
+     */
+    onCollisionEnter(other, self) {
+        cc.log("enemy 发生碰撞 ，回收");
+        //this.over();
+        // todo 血量减少 
+        this.damage();
+    },
+
+    damage() {
+        cc.log("hero damage ");
+    },
+
     // called every frame
     update: function (dt) {
         //cc.systemEvent.on()
