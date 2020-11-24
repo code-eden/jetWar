@@ -34,6 +34,7 @@ cc.Class({
         this.bg2IsOnTop = true;
         this.initAllPool();
         
+        this.genEnemy();
         //cc.log("bg node height " + this.bgHeight);
     },
 
@@ -47,6 +48,17 @@ cc.Class({
 
         this.player.bulletPool = this.bulletPool;
         //this.player.enemyPool = this.enemyPool;
+    },
+
+    // 生成敌机
+    genEnemy(){
+        //this.enemyPool.createNode(this.node);
+       // return
+        let freq = 5;
+        let interval = 1/freq;
+        this.schedule(()=>{
+            this.enemyPool.createNode(this.node);
+        },interval);
     },
 
     start() {
