@@ -33,7 +33,7 @@ cc.Class({
         //cc.log("bullet init");
         //this.pool = pool;
         this.screenHeight = this.node.parent.height;
-        this.screenTop = this.node.parent.height / 2 + 20;
+        this.screenTop = this.node.parent.height / 2 - 30;
     },
 
     fire() {

@@ -31,31 +31,33 @@ cc.Class({
     },
 
     init() {
-        cc.log("enemy init");
-        cc.log("enemy position x " + this.node.x + " y " + this.node.y);
-
-        this.screenH = this.node.parent.height /2;
-        this.screenW = this.node.parent.width /2;
-
+        //cc.log("enemy init");
+        //cc.log("enemy position x " + this.node.x + " y " + this.node.y);
+        
+        this.screenH = this.node.parent.height / 2;
+        this.screenW = this.node.parent.width / 2;
+        //cc.log("parent w " + this.node.parent.width + "parent name " + this.node.parent.name);
         // hero在屏幕最大的位置，防止出屏幕
-        this.edgeW = this.screenW  - this.node.width * this.node.scaleX;
-        this.edgeH = this.screenH  - this.node.height * this.node.scaleY;
-        this.maxX = this.screenW - this.edgeW;
+        this.edgeW = this.screenW - this.node.width * this.node.scaleX / 2;
+        //this.edgeH = this.screenH - this.node.height * this.node.scaleY / 2;
+        //this.maxX = this.screenW - this.edgeW;
+        //cc.log("enemy edgeW x " + this.edgeW + " edgeH " + this.edgeH + " screenW " + this.screenW);
 
         this.node.x = this._getRandomX();
-        this.node.y = this.screenH  + this.node.height;
+        //cc.log("enemy random" + this.node.x);
+        this.node.y = this.screenH + this.node.height;
         this.fly();
     },
     // update (dt) {},
 
-    fly(){
+    fly() {
         let timeToBottom = 2;
         cc.tween(this.node)
-        //.delay(2) 延迟2秒后执行下面的动作
-        // .to(1, { y: screenH }, { easing: 'sineOut' })
-        .to(timeToBottom, { y: -this.screenH })
-        .call(() => { this.over() }) // 执行上面的动作后回调,不能直接this.over() ,需要传入函数
-        .start();
+            //.delay(2) 延迟2秒后执行下面的动作
+            // .to(1, { y: screenH }, { easing: 'sineOut' })
+            .to(timeToBottom, { y: -this.screenH })
+            .call(() => { this.over() }) // 执行上面的动作后回调,不能直接this.over() ,需要传入函数
+            .start();
     },
 
     /**
@@ -70,11 +72,12 @@ cc.Class({
 
     over() {
         //cc.log("bullet over");
+        this.node.y = this.screenH + this.node.height;
         this.pool.nodeOver(this.node);
     },
 
     _getRandomX() {
-        return this._random(0 - this.maxX, this.maxX);
+        return this._random(-this.edgeW, this.edgeW);
     },
 
 

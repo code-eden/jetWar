@@ -1,3 +1,4 @@
+const Input = {};
 cc.Class({
     extends: cc.Component,
 
@@ -5,9 +6,12 @@ cc.Class({
         // defaults, set visually when attaching this script to the Canvas
         bulletSpeed: 0.5,
         bulletFreq: 0.3,
+        health: 100,
+        speed: 0,
+        score: 0,
     },
 
-    onLoad: function () {
+    onLoad() {
         this.screenH = this.node.parent.height;
         this.screenW = this.node.parent.width;
 
@@ -23,55 +27,55 @@ cc.Class({
 
     initEventListener() {
         // 监听触摸事件
-        this.node.on(cc.Node.EventType.TOUCH_MOVE, this.heroMove, this);
+        this.node.on(cc.Node.EventType.TOUCH_MOVE, this._heroMove, this);
         //this.node.on(cc.Node.EventType.MOUSE_DOWN, this.heroMove, this);
-        this.initKeyboardEvent();
-    },
-
-    initKeyboardEvent() {
-        this.node.on(cc.SystemEvent.KEY_DOWN, this.onKeyDown, this);
-        this.node.on(cc.SystemEvent.KEY_UP, this.onKeyUp, this);
+        cc.log("initKeyboardEvent");
+        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
     },
 
     onKeyDown(event) {
-        switch (event.keyCode) {
-            case cc.macro.KEY.a:
-                console.log('Press a key');
-                break;
-            case cc.macro.KEY.s:
-                console.log('Press a key');
-                break;
-            case cc.macro.KEY.w:
-                console.log('Press a key');
-                break;
-            case cc.macro.KEY.d:
-                console.log('Press a key');
-                break;
-        }
+        cc.log("key " + event.keyCode);
+        Input[event.keyCode] = 1;
     },
 
     onKeyUp(event) {
-        switch (event.keyCode) {
-            case cc.macro.KEY.a:
-                console.log('Press a key');
-                break;
-            case cc.macro.KEY.s:
-                console.log('Press a key');
-                break;
-            case cc.macro.KEY.w:
-                console.log('Press a key');
-                break;
-            case cc.macro.KEY.d:
-                console.log('Press a key');
-                break;
-        }
+        Input[event.keyCode] = 0;
     },
 
-    heroMove(touchEvent) { // Event 类型，子类有 EventTouch 、EventMouse等 
+    onDestroy() {
+        this.node.off(cc.Node.EventType.TOUCH_MOVE, this._heroMove, this);
+        cc.systemEvent.off(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+        cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+    },
+
+    _heroMove(touchEvent) { // Event 类型，子类有 EventTouch 、EventMouse等 
         //let location = touchEvent.getLocation();
         this.node.x += touchEvent.getDeltaX(); // 触点距离上一次事件移动的 x 轴距离
         this.node.y += touchEvent.getDeltaY(); // 触点距离上一次事件移动的 y 轴距离
 
+        this.checkPosition();
+    },
+
+    // called every frame dt 单位秒
+    update: function (dt) {
+        if (Input[cc.macro.KEY.a]) {
+            this.node.x -= this.speed * dt;
+        } else if (Input[cc.macro.KEY.d]) {
+            this.node.x += this.speed * dt;
+        }
+
+        if (Input[cc.macro.KEY.w]) {
+            this.node.y += this.speed * dt;
+        } else if (Input[cc.macro.KEY.s]) {
+            this.node.y -= this.speed * dt;
+        }
+
+        this.checkPosition();
+    },
+
+    /** 防止超出屏幕 */
+    checkPosition() {
         if (this.node.x > this.edgeW) {
             this.node.x = this.edgeW;
         } else if (this.node.x < -this.edgeW) {
@@ -112,10 +116,5 @@ cc.Class({
 
     damage() {
         cc.log("hero damage ");
-    },
-
-    // called every frame
-    update: function (dt) {
-        //cc.systemEvent.on()
     },
 });
