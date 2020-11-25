@@ -174,7 +174,7 @@
       "array": [
         0,
         0,
-        537.665603148476,
+        535.2036995387831,
         0,
         0,
         0,
@@ -637,6 +637,9 @@
     "_enabled": true,
     "bulletSpeed": 500,
     "bulletFreq": 5,
+    "health": 100,
+    "speed": 420,
+    "score": 0,
     "_id": "c7iSbe1nRIbI4xJD6AQj6H"
   },
   {

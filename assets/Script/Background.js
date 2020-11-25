@@ -31,11 +31,12 @@ cc.Class({
 
     onLoad() {
         this.bgHeight = this.node.height;
+        this.bgWidth = this.node.width;
         this.bg2IsOnTop = true;
         this.initAllPool();
         
         this.genEnemy();
-        //cc.log("bg node height " + this.bgHeight);
+        //cc.log("bg node bgWidth " + this.bgWidth);
     },
 
     initAllPool(){
@@ -54,7 +55,7 @@ cc.Class({
     genEnemy(){
         //this.enemyPool.createNode(this.node);
        // return
-        let freq = 5;
+        let freq = 2;
         let interval = 1/freq;
         this.schedule(()=>{
             this.enemyPool.createNode(this.node);
