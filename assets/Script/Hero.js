@@ -35,7 +35,7 @@ cc.Class({
     },
 
     onKeyDown(event) {
-        cc.log("key " + event.keyCode);
+        //cc.log("key " + event.keyCode);
         Input[event.keyCode] = 1;
     },
 
