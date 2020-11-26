@@ -3,27 +3,12 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        // foo: {
-        //     // ATTRIBUTES:
-        //     default: null,        // The default value will be used only when the component attaching
-        //                           // to a node for the first time
-        //     type: cc.SpriteFrame, // optional, default is typeof default
-        //     serializable: true,   // optional, default is true
-        // },
-        // bar: {
-        //     get () {
-        //         return this._bar;
-        //     },
-        //     set (value) {
-        //         this._bar = value;
-        //     }
-        // },
+        reward: 1,
+        health: 100,
     },
 
-    // LIFE-CYCLE CALLBACKS:
-
     onLoad() {
-        cc.log("enemy on load");
+        //cc.log("enemy on load");
     },
 
     start() {
@@ -33,7 +18,10 @@ cc.Class({
     init() {
         //cc.log("enemy init");
         //cc.log("enemy position x " + this.node.x + " y " + this.node.y);
-        
+        this._spriteFrame = this.node.getComponent(cc.Sprite).spriteFrame;
+        this.anim = this.node.getComponent(cc.Animation);
+        this._health = this.health;
+
         this.screenH = this.node.parent.height / 2;
         this.screenW = this.node.parent.width / 2;
         //cc.log("parent w " + this.node.parent.width + "parent name " + this.node.parent.name);
@@ -52,12 +40,13 @@ cc.Class({
 
     fly() {
         let timeToBottom = 2;
-        cc.tween(this.node)
+        this.enemyTween = cc.tween(this.node)
             //.delay(2) 延迟2秒后执行下面的动作
             // .to(1, { y: screenH }, { easing: 'sineOut' })
             .to(timeToBottom, { y: -this.screenH })
-            .call(() => { this.over() }) // 执行上面的动作后回调,不能直接this.over() ,需要传入函数
-            .start();
+            .call(() => { this.over() }); // 执行上面的动作后回调,不能直接this.over() ,需要传入函数
+
+        this.enemyTween.start();
     },
 
     /**
@@ -67,6 +56,30 @@ cc.Class({
      */
     onCollisionEnter: function (other, self) {
         cc.log("enemy 发生碰撞 ，回收");
+        // todo 根据子弹伤害进行扣减血量
+        if (this.health <= 0) {
+            // todo 结束
+        }
+        this._explosion();
+    },
+
+    /** 中弹后爆炸 */
+    _explosion() {
+        this.node.stopAllActions();
+        this.anim.play("animation");
+        this.anim.on('finished', this.onResume, this);
+        // todo 播放音效
+    },
+
+    onResume() {
+        cc.log("爆炸后恢复状态用于回收到对象池");
+        // 精灵换成飞机图片
+        this.node.getComponent(cc.Sprite).spriteFrame = this._spriteFrame;
+        // 恢复血量
+        this.health = this._health;
+
+        // todo 通知获取奖励
+        // 回收进对象池
         this.over();
     },
 
