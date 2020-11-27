@@ -34,11 +34,11 @@ cc.Class({
         this.node.x = this._getRandomX();
         //cc.log("enemy random" + this.node.x);
         this.node.y = this.screenH + this.node.height;
-        this.fly();
+        this._fly();
     },
     // update (dt) {},
 
-    fly() {
+    _fly() {
         let timeToBottom = 2;
         this.enemyTween = cc.tween(this.node)
             //.delay(2) 延迟2秒后执行下面的动作
@@ -46,7 +46,7 @@ cc.Class({
             .to(timeToBottom, { y: 100 - this.screenH })
             .call(() => {
                 this._explosion();
-               // this.over() todo 改回来
+                // this.over() todo 改回来
             }); // 执行上面的动作后回调,不能直接this.over() ,需要传入函数
 
         this.enemyTween.start();
@@ -71,11 +71,16 @@ cc.Class({
         //cc.log("爆炸");
         this.enemyTween.stop();
         this.anim.play("explosion");
-        this.anim.on('finished', this.onResume, this);
+        this.anim.on('finished', this._onResume, this);
         // todo 播放音效
+        this._explosionAudio();
     },
 
-    onResume() {
+    _explosionAudio() {
+        // cc.audioEngine.play()
+    },
+
+    _onResume() {
         //cc.log("爆炸后恢复状态用于回收到对象池");
         // 爆炸后恢复状态用于回收到对象池
         // 精灵换成飞机图片
@@ -86,6 +91,17 @@ cc.Class({
         // todo 通知获取奖励
         // 回收进对象池
         this.over();
+    },
+
+    _notifyReward() {
+        // 通知获取奖励
+        let rewardEvent = new cc.Event.EventCustom('win_reward', true);
+        let rewardData = {
+            reward: this.reward,
+        };
+
+        rewardEvent.setUserData(rewardData)
+        this.node.dispatchEvent(rewardEvent);
     },
 
     over() {

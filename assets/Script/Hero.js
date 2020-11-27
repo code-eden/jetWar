@@ -9,6 +9,8 @@ cc.Class({
         health: 100,
         speed: 0,
         score: 0,
+        id: 0,
+        name: 0,
     },
 
     onLoad() {
@@ -33,6 +35,14 @@ cc.Class({
         cc.log("initKeyboardEvent");
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+
+        this.node.on('win_reward', function (event) {
+            cc.log("get win reward");
+            let reward = event.getUserData();
+            let score = reward.reward;
+            cc.log("win score " + score);
+            event.stopPropagation();
+        });
     },
 
     onKeyDown(event) {
@@ -91,7 +101,7 @@ cc.Class({
     },
 
     // 改变发射速度
-    fireReload(interval){
+    fireReload(interval) {
         this.unschedule(this._scheduleCallback);
         this.autoFire(interval);
     },
