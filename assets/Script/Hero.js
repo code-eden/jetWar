@@ -21,8 +21,9 @@ cc.Class({
         //cc.log("hero x " + this.edgeW+ " y " + this.edgeH);
         this.initEventListener();
 
-        this.bulletInterval = 1 / this.bulletFreq;
-        this.autoFire();
+        this.originBulletInterval = 1 / this.bulletFreq;
+        this.bulletInterval = this.originBulletInterval;
+        this.autoFire(this.bulletInterval);
     },
 
     initEventListener() {
@@ -35,7 +36,7 @@ cc.Class({
     },
 
     onKeyDown(event) {
-        cc.log("key " + event.keyCode);
+        //cc.log("key " + event.keyCode);
         Input[event.keyCode] = 1;
     },
 
@@ -89,14 +90,21 @@ cc.Class({
         }
     },
 
-    // 定时自动发射子弹
-    autoFire() {
-        this.schedule(() => {   // 箭头函数this指向是固定不变的，function定义的函数，this的指向随着调用环境的变化而变化的
-            this.createBullet();
-        }, this.bulletInterval);
+    // 改变发射速度
+    fireReload(interval){
+        this.unschedule(this._scheduleCallback);
+        this.autoFire(interval);
     },
 
-    createBullet() {
+    // 定时自动发射子弹
+    autoFire(interval) {
+        this._scheduleCallback = function () {
+            this.createBullet();
+        }
+        this.schedule(this._scheduleCallback, interval); // 箭头函数this指向是固定不变的，function定义的函数，this的指向随着调用环境的变化而变化的
+    },
+
+    createBullet(bulletType) {
         let bullet = this.bulletPool.createNode(this.node.parent);
         bullet.hero = this.node;
         bullet.fire();
@@ -116,5 +124,14 @@ cc.Class({
 
     damage() {
         cc.log("hero damage ");
+    },
+
+    /** 血量为空后爆炸 */
+    _explosion() {
+        //cc.log("爆炸");
+        this.enemyTween.stop();
+        this.anim.play("explosion");
+        this.anim.on('finished', this.onResume, this);
+        // todo 播放音效
     },
 });

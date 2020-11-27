@@ -43,8 +43,11 @@ cc.Class({
         this.enemyTween = cc.tween(this.node)
             //.delay(2) 延迟2秒后执行下面的动作
             // .to(1, { y: screenH }, { easing: 'sineOut' })
-            .to(timeToBottom, { y: -this.screenH })
-            .call(() => { this.over() }); // 执行上面的动作后回调,不能直接this.over() ,需要传入函数
+            .to(timeToBottom, { y: 100 - this.screenH })
+            .call(() => {
+                this._explosion();
+               // this.over() todo 改回来
+            }); // 执行上面的动作后回调,不能直接this.over() ,需要传入函数
 
         this.enemyTween.start();
     },
@@ -65,14 +68,16 @@ cc.Class({
 
     /** 中弹后爆炸 */
     _explosion() {
-        this.node.stopAllActions();
-        this.anim.play("animation");
+        //cc.log("爆炸");
+        this.enemyTween.stop();
+        this.anim.play("explosion");
         this.anim.on('finished', this.onResume, this);
         // todo 播放音效
     },
 
     onResume() {
-        cc.log("爆炸后恢复状态用于回收到对象池");
+        //cc.log("爆炸后恢复状态用于回收到对象池");
+        // 爆炸后恢复状态用于回收到对象池
         // 精灵换成飞机图片
         this.node.getComponent(cc.Sprite).spriteFrame = this._spriteFrame;
         // 恢复血量
