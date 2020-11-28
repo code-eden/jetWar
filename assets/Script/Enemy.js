@@ -60,25 +60,28 @@ cc.Class({
      */
     onCollisionEnter: function (other, self) {
         cc.log("enemy 发生碰撞 ，回收");
+        let otherInstance = null;
         switch (other.tag) {
             case 0:
                 cc.log("enemy 和 hero 发生碰撞");
                 break;
             case 1:
                 cc.log("bullet 和 hero 发生碰撞");
+                otherInstance = other.node.getComponent('Bullet');
                 break;
         }
 
-        this.damage();
+        this.damage(otherInstance);
     },
 
-    damage() {
-        // todo 根据子弹伤害进行扣减血量
-        if (this.health <= 0) {
-            // todo 结束
-        }
-        this._explosion();
+    damage(instance) {
         cc.log("enemy damage ");
+        let hurt = instance.damage;
+        this.health = this.health - hurt;
+
+        if (this.health <= 0) {
+            this._explosion();
+        }
     },
 
     /** 中弹血量到0后爆炸 */

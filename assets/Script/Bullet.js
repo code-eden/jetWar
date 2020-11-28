@@ -3,7 +3,8 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-
+        strengthen: 0,
+        damage: 100,
     },
 
     // LIFE-CYCLE CALLBACKS:
