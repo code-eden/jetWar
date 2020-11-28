@@ -19,7 +19,7 @@ cc.Class({
     onLoad() {
         var manager = cc.director.getCollisionManager();
         manager.enabled = true;
-        manager.enabledDebugDraw = true;
+        // manager.enabledDebugDraw = true;
 
         this.screenH = this.node.parent.height;
         this.screenW = this.node.parent.width;
@@ -47,14 +47,6 @@ cc.Class({
         cc.log("initKeyboardEvent");
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
-
-        this.node.on('win_reward', function (event) {
-            cc.log("get win reward");
-            let reward = event.getUserData();
-            let score = reward.reward;
-            cc.log("win score " + score);
-            event.stopPropagation();
-        });
     },
 
     onKeyDown(event) {
@@ -141,7 +133,7 @@ cc.Class({
     onCollisionEnter(other, self) {
         if (other.tag == 2) {
             cc.log("hero 和 enemy 发生碰撞，直接爆炸");
-            this._explosion();
+            // this._explosion();  //todo 具体处理hero挂掉逻辑
         } else {
             let instance = other.node.getComponent('');
             this.damage(instance);
