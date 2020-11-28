@@ -16,6 +16,11 @@ cc.Class({
     },
 
     init() {
+        // 获取碰撞检测系统：
+        var manager = cc.director.getCollisionManager();
+        manager.enabled = true; // 开启碰撞检测
+        manager.enabledDebugDraw = true; // 开启碰撞检测 debug 绘制
+
         //cc.log("enemy init");
         //cc.log("enemy position x " + this.node.x + " y " + this.node.y);
         this._spriteFrame = this.node.getComponent(cc.Sprite).spriteFrame;
@@ -27,9 +32,6 @@ cc.Class({
         //cc.log("parent w " + this.node.parent.width + "parent name " + this.node.parent.name);
         // hero在屏幕最大的位置，防止出屏幕
         this.edgeW = this.screenW - this.node.width * this.node.scaleX / 2;
-        //this.edgeH = this.screenH - this.node.height * this.node.scaleY / 2;
-        //this.maxX = this.screenW - this.edgeW;
-        //cc.log("enemy edgeW x " + this.edgeW + " edgeH " + this.edgeH + " screenW " + this.screenW);
 
         this.node.x = this._getRandomX();
         //cc.log("enemy random" + this.node.x);
@@ -43,30 +45,43 @@ cc.Class({
         this.enemyTween = cc.tween(this.node)
             //.delay(2) 延迟2秒后执行下面的动作
             // .to(1, { y: screenH }, { easing: 'sineOut' })
-            .to(timeToBottom, { y: 100 - this.screenH })
+            .to(timeToBottom, { y: -this.screenH })
             .call(() => {
-                this._explosion();
-                // this.over() todo 改回来
+                this.over();
             }); // 执行上面的动作后回调,不能直接this.over() ,需要传入函数
 
         this.enemyTween.start();
     },
 
     /**
-     * 当碰撞产生的时候调用
+     * 当碰撞产生的时候调用，对应tag 2
      * @param  {Collider} other 产生碰撞的另一个碰撞组件
      * @param  {Collider} self  产生碰撞的自身的碰撞组件
      */
     onCollisionEnter: function (other, self) {
         cc.log("enemy 发生碰撞 ，回收");
+        switch (other.tag) {
+            case 0:
+                cc.log("enemy 和 hero 发生碰撞");
+                break;
+            case 1:
+                cc.log("bullet 和 hero 发生碰撞");
+                break;
+        }
+
+        this.damage();
+    },
+
+    damage() {
         // todo 根据子弹伤害进行扣减血量
         if (this.health <= 0) {
             // todo 结束
         }
         this._explosion();
+        cc.log("enemy damage ");
     },
 
-    /** 中弹后爆炸 */
+    /** 中弹血量到0后爆炸 */
     _explosion() {
         //cc.log("爆炸");
         this.enemyTween.stop();
@@ -77,7 +92,8 @@ cc.Class({
     },
 
     _explosionAudio() {
-        // cc.audioEngine.play()
+        cc.log("播放爆炸音效");
+        // cc.audioEngine.play();
     },
 
     _onResume() {
@@ -88,7 +104,8 @@ cc.Class({
         // 恢复血量
         this.health = this._health;
 
-        // todo 通知获取奖励
+        // 通知获取奖励
+        this._notifyReward();
         // 回收进对象池
         this.over();
     },
@@ -106,6 +123,7 @@ cc.Class({
 
     over() {
         //cc.log("bullet over");
+        this.health = this._health;
         this.node.y = this.screenH + this.node.height;
         this.pool.nodeOver(this.node);
     },

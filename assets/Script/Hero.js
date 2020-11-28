@@ -10,12 +10,21 @@ cc.Class({
         speed: 0,
         score: 0,
         id: 0,
-        name: 0,
+        heroName: 0,
     },
 
     onLoad() {
+        var manager = cc.director.getCollisionManager();
+        manager.enabled = true;
+        manager.enabledDebugDraw = true;
+
         this.screenH = this.node.parent.height;
         this.screenW = this.node.parent.width;
+
+        this._spriteFrame = this.node.getComponent(cc.Sprite).spriteFrame;
+        this.anim = this.node.getComponent(cc.Animation);
+
+        this._health = this.health;
 
         // hero在屏幕最大的位置，防止出屏幕
         this.edgeW = this.screenW / 2 - this.node.width * this.node.scaleX;
@@ -121,12 +130,14 @@ cc.Class({
     },
 
     /**
-     * 当碰撞产生的时候调用
+     * 当碰撞产生的时候调用，对应tag 0
      * @param  {Collider} other 产生碰撞的另一个碰撞组件
      * @param  {Collider} self  产生碰撞的自身的碰撞组件
      */
     onCollisionEnter(other, self) {
-        cc.log("enemy 发生碰撞 ，回收");
+        if(other.tag == 2){
+            cc.log("hero 和 enemy 发生碰撞");
+        }
         //this.over();
         // todo 血量减少 
         this.damage();
@@ -136,12 +147,22 @@ cc.Class({
         cc.log("hero damage ");
     },
 
-    /** 血量为空后爆炸 */
+    /** 中弹血量到0后爆炸 */
     _explosion() {
         //cc.log("爆炸");
         this.enemyTween.stop();
         this.anim.play("explosion");
-        this.anim.on('finished', this.onResume, this);
+        this.anim.on('finished', this._onResume, this);
         // todo 播放音效
+        this._explosionAudio();
+    },
+
+    _onResume(){
+
+    },
+    
+    _explosionAudio() {
+        cc.log("播放爆炸音效");
+        // cc.audioEngine.play();
     },
 });
