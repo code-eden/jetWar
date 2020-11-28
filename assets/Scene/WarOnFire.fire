@@ -17,7 +17,7 @@
         "__id__": 2
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [],
     "_prefab": null,
     "_opacity": 255,
@@ -81,10 +81,10 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 22
+        "__id__": 23
       },
       {
-        "__id__": 23
+        "__id__": 24
       }
     ],
     "_prefab": null,
@@ -640,6 +640,8 @@
     "health": 100,
     "speed": 420,
     "score": 0,
+    "id": 0,
+    "heroName": 0,
     "_id": "c7iSbe1nRIbI4xJD6AQj6H"
   },
   {
@@ -663,6 +665,9 @@
       },
       {
         "__id__": 21
+      },
+      {
+        "__id__": 22
       }
     ],
     "_prefab": null,
@@ -709,8 +714,8 @@
     "_skewX": 0,
     "_skewY": 0,
     "_is3DNode": false,
-    "_groupIndex": 0,
-    "groupIndex": 0,
+    "_groupIndex": 3,
+    "groupIndex": 3,
     "_id": "93Nd5kZ0xAP4NCSBDw5kCH"
   },
   {
@@ -864,6 +869,27 @@
     ],
     "playOnLoad": false,
     "_id": "2aQNP071ZOVr+FQ/5zfZvf"
+  },
+  {
+    "__type__": "cc.BoxCollider",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 16
+    },
+    "_enabled": true,
+    "tag": 0,
+    "_offset": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 0
+    },
+    "_size": {
+      "__type__": "cc.Size",
+      "width": 186,
+      "height": 130
+    },
+    "_id": "bdAp+1GHdLuIynv7m3O1zV"
   },
   {
     "__type__": "cc.Canvas",

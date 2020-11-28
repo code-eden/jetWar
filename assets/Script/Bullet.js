@@ -17,19 +17,36 @@ cc.Class({
     },
 
     /**
-     * 当碰撞产生的时候调用
+     * 当碰撞产生的时候调用 ,对应tag 1
      * @param  {Collider} other 产生碰撞的另一个碰撞组件
      * @param  {Collider} self  产生碰撞的自身的碰撞组件
      */
     onCollisionEnter: function (other, self) {
-        cc.log("bullet 发生碰撞 ，回收");
-        this.over();
+        // cc.log("bullet 发生碰撞 ，回收");
+        if (other.tag == 2) {
+            this.bulletTween.stop();
+            this.over();
+            cc.log("bullet 和 enemy 发生碰撞");
+        }
+    },
+
+    /**
+     * 当碰撞结束后调用
+     * @param  {Collider} other 产生碰撞的另一个碰撞组件
+     * @param  {Collider} self  产生碰撞的自身的碰撞组件
+     */
+    onCollisionExit: function (other, self) {
+        console.log('bullet 碰撞结束');
+        //this.over();
     },
 
     // update (dt) {},
 
     // 启动子弹发射
     init() {
+        var manager = cc.director.getCollisionManager();
+        manager.enabled = true;
+        manager.enabledDebugDraw = true;
         //cc.log("bullet init");
         //this.pool = pool;
         this.screenHeight = this.node.parent.height;
@@ -49,12 +66,12 @@ cc.Class({
         let timeToTop = (this.screenTop - bulletY) / bulletSpeed;// 子弹到达顶部的时间，为了保证子弹速度一致。
         //cc.log("time to top " + timeToTop);
         // 子弹发射
-        cc.tween(this.node)
+        this.bulletTween = cc.tween(this.node)
             //.delay(2) 延迟2秒后执行下面的动作
             // .to(1, { y: screenH }, { easing: 'sineOut' })
             .to(timeToTop, { y: this.screenTop })
-            .call(() => { this.over() }) // 执行上面的动作后回调,不能直接this.over() ,需要传入函数
-            .start();
+            .call(() => { this.over() }); // 执行上面的动作后回调,不能直接this.over() ,需要传入函数
+        this.bulletTween.start();
     },
 
     over() {
