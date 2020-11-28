@@ -1,12 +1,32 @@
 {
   "collision-matrix": [
     [
+      false
+    ],
+    [
+      false,
+      false,
       true
+    ],
+    [
+      false,
+      true,
+      false,
+      true
+    ],
+    [
+      false,
+      false,
+      true,
+      false
     ]
   ],
   "excluded-modules": [],
   "group-list": [
-    "default"
+    "default",
+    "herobullet",
+    "enemy",
+    "hero"
   ],
   "start-scene": "a11fcd90-af07-4268-8f54-2df1fadd9aa4",
   "design-resolution-width": 640,

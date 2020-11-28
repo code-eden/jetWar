@@ -38,7 +38,6 @@ cc.Class({
         this.genEnemy();
         //cc.log("bg node bgWidth " + this.bgWidth);
 
-
         this.node.on('win_reward', (event) => {
             let reward = event.getUserData();
             let score = reward.score;
