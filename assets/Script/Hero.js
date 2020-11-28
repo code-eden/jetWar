@@ -6,7 +6,10 @@ cc.Class({
         // defaults, set visually when attaching this script to the Canvas
         bulletSpeed: 0.5,
         bulletFreq: 0.3,
-        health: 100,
+        health: 100, // 血条
+        energy: 0, // 能量
+        strengthen: 0, // 强化
+        shield: 0, // 护盾
         speed: 0,
         score: 0,
         id: 0,
@@ -64,9 +67,6 @@ cc.Class({
     },
 
     onDestroy() {
-        this.node.off(cc.Node.EventType.TOUCH_MOVE, this._heroMove, this);
-        cc.systemEvent.off(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
-        cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
     },
 
     _heroMove(touchEvent) { // Event 类型，子类有 EventTouch 、EventMouse等 
@@ -111,16 +111,20 @@ cc.Class({
 
     // 改变发射速度
     fireReload(interval) {
-        this.unschedule(this._scheduleCallback);
+        this._stopFire();
         this.autoFire(interval);
     },
 
     // 定时自动发射子弹
-    autoFire(interval) {
+    autoFire(interval, bulletType) {
         this._scheduleCallback = function () {
-            this.createBullet();
+            this.createBullet(bulletType);
         }
         this.schedule(this._scheduleCallback, interval); // 箭头函数this指向是固定不变的，function定义的函数，this的指向随着调用环境的变化而变化的
+    },
+
+    _stopFire() {
+        this.unschedule(this._scheduleCallback);
     },
 
     createBullet(bulletType) {
@@ -135,32 +139,56 @@ cc.Class({
      * @param  {Collider} self  产生碰撞的自身的碰撞组件
      */
     onCollisionEnter(other, self) {
-        if(other.tag == 2){
-            cc.log("hero 和 enemy 发生碰撞");
+        if (other.tag == 2) {
+            cc.log("hero 和 enemy 发生碰撞，直接爆炸");
+            this._explosion();
+        } else {
+            let instance = other.node.getComponent('');
+            this.damage(instance);
         }
-        //this.over();
-        // todo 血量减少 
-        this.damage();
     },
 
-    damage() {
+    damage(instance) {
         cc.log("hero damage ");
+        let hurt = instance.damage;
+        this.shield = this.shield - hurt;
+
+        // 护盾还没衰减到0,继续
+        if (this.shield > 0) {
+            return;
+        }
+
+        this.health = this.health + this.shield;
+        this.shield = 0;
+
+        if (this.health <= 0) {
+            this._explosion();
+        }
+    },
+
+    _createShield(shieldNum) {
+        this.shield = shieldNum;
     },
 
     /** 中弹血量到0后爆炸 */
     _explosion() {
+        this._stopFire();
         //cc.log("爆炸");
-        this.enemyTween.stop();
         this.anim.play("explosion");
         this.anim.on('finished', this._onResume, this);
         // todo 播放音效
         this._explosionAudio();
     },
 
-    _onResume(){
-
+    _onResume() {
+        this.node.off(cc.Node.EventType.TOUCH_MOVE, this._heroMove, this);
+        cc.systemEvent.off(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+        cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+        this.health = this._health;
+        this.shield = 0;
+        // todo 结束游戏，显示得分
     },
-    
+
     _explosionAudio() {
         cc.log("播放爆炸音效");
         // cc.audioEngine.play();
