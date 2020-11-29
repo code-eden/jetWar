@@ -7,6 +7,7 @@ cc.Class({
         damage: 100,
         heroId: 99,
         collisionGroup: 'herobullet',
+        isInit: false,
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -17,6 +18,23 @@ cc.Class({
 
     start() {
 
+    },
+
+    // 启动子弹发射
+    init() {
+        if (this.isInit) {
+            return;
+        }
+
+        var manager = cc.director.getCollisionManager();
+        manager.enabled = true;
+        // manager.enabledDebugDraw = true;
+        //cc.log("bullet init");
+        //this.pool = pool;
+        this.screenHeight = this.node.parent.height;
+        this.screenTop = this.node.parent.height / 2 - 40;
+
+        this.isInit = true;
     },
 
     /**
@@ -30,7 +48,7 @@ cc.Class({
         if (other.tag == 2) {
             this.bulletTween.stop();
             this.over();
-            cc.log("bullet 和 enemy 发生碰撞");
+            // cc.log("bullet 和 enemy 发生碰撞");
         }
     },
 
@@ -54,16 +72,6 @@ cc.Class({
     },
     // update (dt) {},
 
-    // 启动子弹发射
-    init() {
-        var manager = cc.director.getCollisionManager();
-        manager.enabled = true;
-        // manager.enabledDebugDraw = true;
-        //cc.log("bullet init");
-        //this.pool = pool;
-        this.screenHeight = this.node.parent.height;
-        this.screenTop = this.node.parent.height / 2 - 30;
-    },
 
     fire() {
         //cc.log("bullet now fire");

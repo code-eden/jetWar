@@ -16,6 +16,10 @@ cc.Class({
             default: null,
             type: require("Hero"), // 获取 hero 实例
         },
+        /* startButton: {
+             default: null,
+             type: require("StartGame"), // 获取 hero 实例
+         },*/
         enemyPrefab: {
             default: null,
             type: cc.Prefab,
@@ -35,14 +39,19 @@ cc.Class({
         this.bg2IsOnTop = true;
         this.initAllPool();
 
-        this.genEnemy();
+        this.rewardCound = 0;
+        this.palying = false;
+
+        // this.genEnemy();
         //cc.log("bg node bgWidth " + this.bgWidth);
 
         this.node.on('win_reward', (event) => {
             let reward = event.getUserData();
             let score = reward.score;
+            this.rewardCound += score;
             let heroId = reward.heroId;
-            cc.log("hero " + heroId + "get win reward");
+            //cc.log("hero " + heroId + "get win reward");
+            //cc.log("hero " + heroId + " reward count " + this.rewardCound);
             //cc.log("win score " + score);
             //cc.log("heroId " + heroId);
             event.stopPropagation();
@@ -65,6 +74,7 @@ cc.Class({
     genEnemy() {
         //this.enemyPool.createNode(this.node);
         // return
+        this.palying = true;
         let freq = 2;
         let interval = 1 / freq;
         this.schedule(() => {
@@ -77,7 +87,9 @@ cc.Class({
     },
 
     update(dt) {
-        this.bgMoveDown();
+        if (this.palying) {
+            this.bgMoveDown();
+        }
     },
 
     /** 背景向下移动 */

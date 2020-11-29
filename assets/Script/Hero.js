@@ -14,6 +14,15 @@ cc.Class({
         score: 0,
         id: 0,
         heroName: 0,
+        /*boomAudio: {
+            default: null,
+            type: cc.AudioSource,
+        }*/
+    },
+
+    startGame(){
+        this.initEventListener();
+        this.autoFire(this.bulletInterval);
     },
 
     onLoad() {
@@ -33,11 +42,9 @@ cc.Class({
         this.edgeW = this.screenW / 2 - this.node.width * this.node.scaleX;
         this.edgeH = this.screenH / 2 - this.node.height * this.node.scaleY;
         //cc.log("hero x " + this.edgeW+ " y " + this.edgeH);
-        this.initEventListener();
 
         this.originBulletInterval = 1 / this.bulletFreq;
         this.bulletInterval = this.originBulletInterval;
-        this.autoFire(this.bulletInterval);
     },
 
     initEventListener() {

@@ -30,10 +30,13 @@
       },
       {
         "__id__": 5
+      },
+      {
+        "__id__": 6
       }
     ],
     "_prefab": {
-      "__id__": 6
+      "__id__": 7
     },
     "_opacity": 255,
     "_color": {
@@ -124,6 +127,8 @@
     "_enabled": true,
     "reward": 1,
     "health": 100,
+    "collisionGroup": "enemy",
+    "isInit": false,
     "_id": ""
   },
   {
@@ -162,6 +167,24 @@
       "width": 120,
       "height": 79
     },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.AudioSource",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "_clip": {
+      "__uuid__": "98321269-c42a-4908-87f4-cded9c38974f"
+    },
+    "_volume": 0.2,
+    "_mute": false,
+    "_loop": false,
+    "playOnLoad": false,
+    "preload": false,
     "_id": ""
   },
   {

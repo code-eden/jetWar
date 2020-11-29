@@ -27,10 +27,13 @@
       },
       {
         "__id__": 4
+      },
+      {
+        "__id__": 5
       }
     ],
     "_prefab": {
-      "__id__": 5
+      "__id__": 6
     },
     "_opacity": 255,
     "_color": {
@@ -119,6 +122,10 @@
       "__id__": 1
     },
     "_enabled": true,
+    "strengthen": 0,
+    "damage": 100,
+    "heroId": 99,
+    "collisionGroup": "herobullet",
     "_id": ""
   },
   {
@@ -140,6 +147,24 @@
       "width": 62,
       "height": 108
     },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.AudioSource",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "_clip": {
+      "__uuid__": "e3a772d7-e8dc-478c-b115-ab7bd5d473fe"
+    },
+    "_volume": 0.1,
+    "_mute": false,
+    "_loop": false,
+    "playOnLoad": false,
+    "preload": false,
     "_id": ""
   },
   {
