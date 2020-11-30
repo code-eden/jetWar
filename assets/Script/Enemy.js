@@ -5,6 +5,8 @@ cc.Class({
     properties: {
         reward: 1,
         health: 100,
+        collisionGroup: 'enemy',
+        isInit: false,
     },
 
     onLoad() {
@@ -16,22 +18,29 @@ cc.Class({
     },
 
     init() {
-        // 获取碰撞检测系统：
-        var manager = cc.director.getCollisionManager();
-        manager.enabled = true; // 开启碰撞检测
-        manager.enabledDebugDraw = true; // 开启碰撞检测 debug 绘制
+        //cc.log("is enemy init "+ this.isInit);
+        if (!this.isInit) {
+            // 获取碰撞检测系统：
+            var manager = cc.director.getCollisionManager();
+            manager.enabled = true; // 开启碰撞检测
+            // manager.enabledDebugDraw = true; // 开启碰撞检测 debug 绘制
 
-        //cc.log("enemy init");
-        //cc.log("enemy position x " + this.node.x + " y " + this.node.y);
-        this._spriteFrame = this.node.getComponent(cc.Sprite).spriteFrame;
-        this.anim = this.node.getComponent(cc.Animation);
-        this._health = this.health;
+            // this.rewardEvent = new cc.Event.EventCustom('win_reward', true);
+            //cc.log("enemy init");
+            //cc.log("enemy position x " + this.node.x + " y " + this.node.y);
+            this._spriteFrame = this.node.getComponent(cc.Sprite).spriteFrame;
+            this.anim = this.node.getComponent(cc.Animation);
+            this._health = this.health;
 
-        this.screenH = this.node.parent.height / 2;
-        this.screenW = this.node.parent.width / 2;
-        //cc.log("parent w " + this.node.parent.width + "parent name " + this.node.parent.name);
-        // hero在屏幕最大的位置，防止出屏幕
-        this.edgeW = this.screenW - this.node.width * this.node.scaleX / 2;
+            this.screenH = this.node.parent.height / 2;
+            this.screenW = this.node.parent.width / 2;
+            //cc.log("parent w " + this.node.parent.width + "parent name " + this.node.parent.name);
+            // hero在屏幕最大的位置，防止出屏幕
+            this.edgeW = this.screenW - this.node.width * this.node.scaleX / 2;
+
+            this.boomAudio = this.getComponent(cc.AudioSource);
+            this.isInit = true;
+        }
 
         this.node.x = this._getRandomX();
         //cc.log("enemy random" + this.node.x);
@@ -59,14 +68,16 @@ cc.Class({
      * @param  {Collider} self  产生碰撞的自身的碰撞组件
      */
     onCollisionEnter: function (other, self) {
-        cc.log("enemy 发生碰撞 ，回收");
+        this.node.group = 'default'; //不让动画在执行碰撞
+        // cc.log("enemy 发生碰撞 ，回收");
         let otherInstance = null;
         switch (other.tag) {
             case 0:
-                cc.log("enemy 和 hero 发生碰撞");
-                break;
+                // cc.log("hero 和 enemy 发生碰撞");
+                this._explosion(false);
+                return;
             case 1:
-                cc.log("bullet 和 hero 发生碰撞");
+                // cc.log("bullet 和 enemy 发生碰撞");
                 otherInstance = other.node.getComponent('Bullet');
                 break;
         }
@@ -75,27 +86,34 @@ cc.Class({
     },
 
     damage(instance) {
-        cc.log("enemy damage ");
-        let hurt = instance.damage;
+        let hurt = instance.getDamage();
         this.health = this.health - hurt;
+        // cc.log("enemy damage health " + this.health);
 
         if (this.health <= 0) {
-            this._explosion();
+            // cc.log("enemy damage to death");
+            this._explosion(true, instance.getHeroId());
         }
     },
 
     /** 中弹血量到0后爆炸 */
-    _explosion() {
+    _explosion(reward, heroId) {
+        // cc.director.getCollisionManager().enabled = false;
         //cc.log("爆炸");
         this.enemyTween.stop();
         this.anim.play("explosion");
         this.anim.on('finished', this._onResume, this);
         // todo 播放音效
         this._explosionAudio();
+        // 通知获取奖励
+        if (reward) {
+            this._notifyReward(heroId);
+        }
     },
 
     _explosionAudio() {
-        cc.log("播放爆炸音效");
+        //cc.log("播放爆炸音效");
+        this.boomAudio.play();
         // cc.audioEngine.play();
     },
 
@@ -106,22 +124,23 @@ cc.Class({
         this.node.getComponent(cc.Sprite).spriteFrame = this._spriteFrame;
         // 恢复血量
         this.health = this._health;
-
-        // 通知获取奖励
-        this._notifyReward();
+        this.node.group = this.collisionGroup;
         // 回收进对象池
         this.over();
     },
 
-    _notifyReward() {
+    _notifyReward(heroId) {
         // 通知获取奖励
+        // cc.log('notify reward');
         let rewardEvent = new cc.Event.EventCustom('win_reward', true);
+        let rewardNum = this.reward;
         let rewardData = {
-            reward: this.reward,
+            score: rewardNum,
+            heroId: heroId,
         };
 
-        rewardEvent.setUserData(rewardData)
-        this.node.dispatchEvent(rewardEvent);
+        rewardEvent.setUserData(rewardData);
+        this.node.dispatchEvent(rewardEvent); // 父节点才能收到事件
     },
 
     over() {
